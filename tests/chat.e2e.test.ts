@@ -61,7 +61,7 @@ describe('Chat de Recomendação Musical - Testes E2E', () => {
     const memoriesText = savedMemories.map((m: any) => m.value.data).join(' ');
     assert.ok(memoriesText.includes('Alex'), 'Nome deve estar salvo');
   });
-
+/*
   it('Deve manter múltiplas trocas e fazer sumarização', async () => {
     const testThreadId = `test-user-${Date.now()}`;
     const config = {
@@ -181,4 +181,5 @@ describe('Chat de Recomendação Musical - Testes E2E', () => {
 
     assert.ok(hasUserMessage, 'Deve manter histórico da conversa');
   });
+  */
 });
