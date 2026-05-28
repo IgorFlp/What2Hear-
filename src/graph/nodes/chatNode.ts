@@ -4,6 +4,7 @@ import type { GraphState } from '../graph.ts';
 import { ChatResponseSchema, getSystemPrompt, getUserPromptTemplate } from '../../prompts/v1/chatResponse.ts';
 import { AIMessage, HumanMessage } from 'langchain';
 import { PreferencesService } from '../../services/preferencesService.ts';
+import {config} from '../../config.ts'
 
 export function createChatNode(llmClient: OpenRouterService, preferencesService: PreferencesService) {
   return async (state: GraphState, runtime?: Runtime): Promise<Partial<GraphState>> => {
@@ -24,8 +25,10 @@ export function createChatNode(llmClient: OpenRouterService, preferencesService:
       systemPrompt, 
       userPrompt, 
       ChatResponseSchema);
-        
-     
+    
+    const totalMessages = state.messages.length;
+    const needsSummarization = totalMessages >= config.maxMessagesToSummary;
+    
     if(!result.success || !result.data) {
       console.error('Erro ao gerar resposta do chat:', result.error);
       const errorMessage = `Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.`;
@@ -41,7 +44,7 @@ export function createChatNode(llmClient: OpenRouterService, preferencesService:
         new AIMessage(response.message),
       ],
       extractedPreferences: response.shouldSavePreferences? response.preferences : undefined,
-      needsSummarization: false,
+      needsSummarization: needsSummarization,
     };
   };
 }
